@@ -21,6 +21,23 @@ namespace Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Infrastructure.Entities.CurrencyEntity", b =>
+                {
+                    b.Property<string>("ISOCode")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ISOCode");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Currencies");
+                });
+
             modelBuilder.Entity("Infrastructure.Entities.CustomerEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -51,7 +68,11 @@ namespace Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("money");
+
+                    b.Property<string>("CurrencyISOCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
@@ -62,6 +83,8 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CurrencyISOCode");
+
                     b.HasIndex("CustomerId");
 
                     b.ToTable("Orders");
@@ -69,13 +92,26 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Infrastructure.Entities.OrderEntity", b =>
                 {
+                    b.HasOne("Infrastructure.Entities.CurrencyEntity", "Currency")
+                        .WithMany("Orders")
+                        .HasForeignKey("CurrencyISOCode")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("Infrastructure.Entities.CustomerEntity", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Currency");
+
                     b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("Infrastructure.Entities.CurrencyEntity", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("Infrastructure.Entities.CustomerEntity", b =>

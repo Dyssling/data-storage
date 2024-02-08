@@ -9,7 +9,7 @@ namespace Infrastructure.Factories
         public CustomersDataContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<CustomersDataContext>();
-            optionsBuilder.UseSqlServer(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Education\data-storage\assignment\Assignment\Infrastructure\Data\customers_and_orders_database.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True");
+            optionsBuilder.UseSqlServer(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Education\data-storage\assignment\Assignment\Infrastructure\Data\CustomersAndOrders.mdf;Integrated Security=True;Connect Timeout=30");
 
             return new CustomersDataContext(optionsBuilder.Options);
         }

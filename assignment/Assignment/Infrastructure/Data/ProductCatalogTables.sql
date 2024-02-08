@@ -1,12 +1,21 @@
-﻿CREATE TABLE Products (
-	ArticleNumber nvarchar(max) not null primary key,
+﻿DROP TABLE ProductReviews
+DROP TABLE ProductImages
+DROP TABLE ProductCategories
+DROP TABLE Reviews
+DROP TABLE Images
+DROP TABLE Categories
+DROP TABLE Products
+
+CREATE TABLE Products (
+	ArticleNumber nvarchar(256) not null primary key,
 	[Name] nvarchar(max) not null,
-	[Description] nvarchar(max) null
+	[Description] nvarchar(max) null,
+	Price money not null --Alla priser får vara i SEK till att börja med, sedan kan man omvandla det till andra valutor genom en service 
 )
 
 CREATE TABLE Categories (
 	Id int identity not null primary key,
-	[Name] nvarchar(max) not null unique
+	[Name] nvarchar(256) not null unique
 )
 
 CREATE TABLE Images (
@@ -23,6 +32,18 @@ CREATE TABLE Reviews (
 )
 
 CREATE TABLE ProductCategories (
-	ArticleNumber nvarchar(max) not null references Products(ArticleNumber),
-	CategoryId int not null references Categories(Id)
+	ArticleNumber nvarchar(256) not null references Products(ArticleNumber),
+	CategoryId int not null references Categories(Id),
+	primary key (ArticleNumber, CategoryId)
+)
+
+CREATE TABLE ProductImages (
+	ArticleNumber nvarchar(256) not null references Products(ArticleNumber),
+	ImageId int not null references Images(Id),
+	primary key (ArticleNumber, ImageId)
+)
+
+CREATE TABLE ProductReviews (
+	ReviewId int not null primary key references Reviews(Id),
+	ArticleNumber nvarchar(256) not null references Products(ArticleNumber) --ArticleNumber behöver inte vara en nyckel här, eftersom varje ReviewId ändå bara kommer finnas en gång i tabellen
 )

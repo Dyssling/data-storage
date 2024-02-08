@@ -4,7 +4,6 @@ namespace Infrastructure.Entities
 {
     public class CustomerEntity
     {
-        [Key]
         public int Id { get; set; }
 
         [Required]

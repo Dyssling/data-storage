@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 var builder = Host.CreateDefaultBuilder();
 builder.ConfigureServices(services =>
 {
-    services.AddDbContext<CustomersDataContext>(x => x.UseSqlServer(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Education\data-storage\assignment\Assignment\Infrastructure\Data\customers_and_orders_database.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True"));
+    services.AddDbContext<CustomersDataContext>(x => x.UseSqlServer(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Education\data-storage\assignment\Assignment\Infrastructure\Data\CustomersAndOrders.mdf;Integrated Security=True;Connect Timeout=30"));
 });
 
 builder.Build();
