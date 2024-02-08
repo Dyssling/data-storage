@@ -38,9 +38,8 @@ CREATE TABLE ProductCategories (
 )
 
 CREATE TABLE ProductImages (
-	ArticleNumber nvarchar(256) not null references Products(ArticleNumber),
-	ImageId int not null references Images(Id),
-	primary key (ArticleNumber, ImageId)
+	ImageId int not null primary key references Images(Id),
+	ArticleNumber nvarchar(256) not null references Products(ArticleNumber) --ArticleNumber behöver inte vara en nyckel här, eftersom varje ImageId ändå bara kommer finnas en gång i tabellen
 )
 
 CREATE TABLE ProductReviews (
