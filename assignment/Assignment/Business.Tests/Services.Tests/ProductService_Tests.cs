@@ -30,5 +30,25 @@ namespace Business.Tests.Services.Tests
             Assert.True(result); //Assert delen, där jag kollar om man får tillbaka true, vilket man bör få om allt gick som tänkt
             Assert.Equal("TestCategory", category.Name); //Jag kollar även om kategorin har skapats, genom att jämföra namnen
         }
+
+        [Fact]
+        public async Task GetOneProductAsync_ShouldGetOneProduct_And_ReturnProductDto()
+        {
+            var service = new ProductService(_context); //Arrange delen
+            ProductDto product = new ProductDto()
+            {
+                ArticleNumber = "TestArticleNumber",
+                Name = "TestName",
+                Price = 10,
+                Categories = new List<string>() { "TestCategory" }
+            };
+            await service.CreateProductAsync(product); //Lägger till den skapade produkten i databasen
+
+            var result = await service.GetOneProductAsync("TestArticleNumber"); //Act delen, där jag hämtar en produkt efter artikelnumret
+            var nullresult = await service.GetOneProductAsync(""); //Här testar jag även ett artikelnummer som inte bör hittas
+
+            Assert.Equal("TestArticleNumber", result.ArticleNumber); //Här kollar jag så att artikelnumret stämmer, och på så vis vet jag att produkten har hämtats
+            Assert.Null(nullresult); //Jag kollar även att det blir null på nullresult
+        }
     }
 }

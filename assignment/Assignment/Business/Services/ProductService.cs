@@ -3,6 +3,7 @@ using Infrastructure.Contexts;
 using Infrastructure.Entities;
 using Infrastructure.Repositories;
 using System.Diagnostics;
+using System.Linq.Expressions;
 
 namespace Business.Services
 {
@@ -54,6 +55,40 @@ namespace Business.Services
                 Debug.WriteLine(ex.Message);
                 return false; //Om metoden inte lyckas returneras ett false värde
             }
+        }
+
+        public async Task<ProductDto> GetOneProductAsync(string articleNumber)
+        {
+            try
+            {
+                var entity = await _repository.GetOneAsync(x => x.ArticleNumber == articleNumber); //Jag söker efter entiteten med det angivna artikelnumret
+
+                if (entity != null)
+                {
+                    ICollection<string> categories = new List<string>(); //Skapar en lista där produktens kategorier kommer lagras
+
+                    foreach (Category category in entity.Categories) //Varje kategorinamn läggs till i listan
+                    {
+                        categories.Add(category.Name);
+                    }
+
+                    ProductDto product = new ProductDto()
+                    {
+                        ArticleNumber = entity.ArticleNumber,
+                        Name = entity.Name,
+                        Description = entity.Description,
+                        Price = entity.Price,
+                        Categories = categories //Här sätts kategorilistan in som en property
+                    };
+
+                    return product;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            return null!; //Om ingen produkt hittas så returneras ett null värde
         }
     }
 }
