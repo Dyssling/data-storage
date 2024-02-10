@@ -19,5 +19,19 @@ namespace Infrastructure.Tests.Repositories.Tests
 
             Assert.True(result); //Assert delen, där jag kollar om man får tillbaka ett true värde (som man bör få om entiteten kunde läggas till i databasen)
         }
+
+        [Fact]
+        public async Task GetOneAsync_ShouldGetEntityFromTable_And_ReturnEntity()
+        {
+            var repository = new CategoryRepository(_context); //Arrange delen
+            var entity = new Category() { Name = "Test" };
+            var secondEntity = new Category() { Name = "Test2" };
+            await repository.CreateAsync(entity); //Jag lägger till dessa två entiteter i tabellen
+            await repository.CreateAsync(secondEntity);
+
+            var result = await repository.GetOneAsync(x => x.Name == "Test2"); //Act delen, där jag hämtar den andra entiteten från InMemory databasen
+
+            Assert.Equal(2, result.Id); //Assert delen, där jag kollar om man får tillbaka ett Id på 2, vilket man bör få eftersom man vill få tillbaka den andra entiteten
+        }
     }
 }
