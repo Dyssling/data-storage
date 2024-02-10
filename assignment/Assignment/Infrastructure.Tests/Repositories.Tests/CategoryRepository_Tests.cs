@@ -58,7 +58,19 @@ namespace Infrastructure.Tests.Repositories.Tests
 
             var result = await repository.UpdateAsync(x => x.Name == "Test", newEntity); //Act delen, där jag uppdaterar den gamla entiteten med den nya
 
-            Assert.True(result); //Assert delen, där jag kollar om man får tillbaka ett count på 2, vilket man bör få eftersom man vill få tillbaka två (alla) entiteter
+            Assert.True(result); //Assert delen, där jag kollar om man får tillbaka ett true värde (vilket man bör få om allt gick som det ska)
+        }
+
+        [Fact]
+        public async Task DeleteAsync_ShouldDeleteEntity_And_ReturnTrue()
+        {
+            var repository = new CategoryRepository(_context); //Arrange delen
+            var entity = new Category() { Name = "Test" };
+            await repository.CreateAsync(entity);
+
+            var result = await repository.DeleteAsync(x => x.Name == "Test"); //Act delen, där jag raderar entiteten
+
+            Assert.True(result); //Assert delen, där jag kollar om man får tillbaka ett true värde
         }
     }
 }
