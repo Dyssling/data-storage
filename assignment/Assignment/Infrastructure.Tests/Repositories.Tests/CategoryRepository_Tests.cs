@@ -47,5 +47,18 @@ namespace Infrastructure.Tests.Repositories.Tests
 
             Assert.Equal(2, result.Count()); //Assert delen, där jag kollar om man får tillbaka ett count på 2, vilket man bör få eftersom man vill få tillbaka två (alla) entiteter
         }
+
+        [Fact]
+        public async Task UpdateAsync_ShouldUpdateEntity_And_ReturnTrue()
+        {
+            var repository = new CategoryRepository(_context); //Arrange delen
+            var entity = new Category() { Name = "Test" };
+            await repository.CreateAsync(entity);
+            var newEntity = new Category() { Id = entity.Id, Name = "NewTest", ArticleNumbers = entity.ArticleNumbers }; //Och här skapar jag den nya entiteten, vars värden ska ersätta den gamla entitetens värden. Id och ArticleNumbers ska inte uppdateras.
+
+            var result = await repository.UpdateAsync(x => x.Name == "Test", newEntity); //Act delen, där jag uppdaterar den gamla entiteten med den nya
+
+            Assert.True(result); //Assert delen, där jag kollar om man får tillbaka ett count på 2, vilket man bör få eftersom man vill få tillbaka två (alla) entiteter
+        }
     }
 }
