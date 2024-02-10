@@ -33,5 +33,19 @@ namespace Infrastructure.Tests.Repositories.Tests
 
             Assert.Equal(2, result.Id); //Assert delen, där jag kollar om man får tillbaka ett Id på 2, vilket man bör få eftersom man vill få tillbaka den andra entiteten
         }
+
+        [Fact]
+        public async Task GetAllAsync_ShouldGetEntitiesFromTable_And_ReturnIEnumerable()
+        {
+            var repository = new CategoryRepository(_context); //Arrange delen
+            var entity = new Category() { Name = "Test" };
+            var secondEntity = new Category() { Name = "Test2" };
+            await repository.CreateAsync(entity);
+            await repository.CreateAsync(secondEntity);
+
+            var result = await repository.GetAllAsync(); //Act delen, där jag hämtar entiteterna från InMemory databasen
+
+            Assert.Equal(2, result.Count()); //Assert delen, där jag kollar om man får tillbaka ett count på 2, vilket man bör få eftersom man vill få tillbaka två (alla) entiteter
+        }
     }
 }
