@@ -12,6 +12,6 @@ namespace Business.Dtos
 
         public decimal Price { get; set; }
 
-        public ICollection<Category> Categories { get; set; } = new List<Category>();
+        public ICollection<string> Categories { get; set; } = new List<string>();
     }
 }
