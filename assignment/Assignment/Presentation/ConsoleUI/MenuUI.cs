@@ -35,13 +35,16 @@ namespace Presentation.ConsoleUI
                     await getUI.Show();
                     break;
                 case "3":
-                    
+                    GetAllUI getAllUI = new GetAllUI(_productsDataContext, _customersDataContext);
+                    await getAllUI.Show();
                     break;
                 case "4":
-                    
+                    UpdateUI updateUI = new UpdateUI(_productsDataContext, _customersDataContext);
+                    await updateUI.Show();
                     break;
                 case "5":
-                    
+                    DeleteUI deleteUI = new DeleteUI(_productsDataContext, _customersDataContext);
+                    await deleteUI.Show();
                     break;
             }
         }

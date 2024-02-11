@@ -34,6 +34,10 @@ namespace Presentation.ConsoleUI
                     AddCategoryUI addCategoryUI = new AddCategoryUI(_productsDataContext!);
                     await addCategoryUI.Show();
                     break;
+                case "2":
+                    AddCurrencyUI addCurrencyUI = new AddCurrencyUI(_customersDataContext!);
+                    await addCurrencyUI.Show();
+                    break;
             }
         }
     }

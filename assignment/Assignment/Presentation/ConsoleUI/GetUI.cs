@@ -32,6 +32,10 @@ namespace Presentation.ConsoleUI
                     GetOneCategoryUI getOneCategoryUI = new GetOneCategoryUI(_productsDataContext!);
                     await getOneCategoryUI.Show();
                     break;
+                case "2":
+                    GetOneCurrencyUI getOneCurrencyUI = new GetOneCurrencyUI(_customersDataContext!);
+                    await getOneCurrencyUI.Show();
+                    break;
             }
         }
     }
