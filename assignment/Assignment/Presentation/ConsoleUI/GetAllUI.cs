@@ -48,6 +48,10 @@ namespace Presentation.ConsoleUI
                     GetAllOrdersUI getAllOrdersUI = new GetAllOrdersUI(_customersDataContext!);
                     await getAllOrdersUI.Show();
                     break;
+                case "6":
+                    GetAllProductsUI getAllProductsUI = new GetAllProductsUI(_productsDataContext!);
+                    await getAllProductsUI.Show();
+                    break;
             }
         }
     }

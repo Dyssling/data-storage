@@ -50,6 +50,10 @@ namespace Presentation.ConsoleUI
                     AddOrderUI addOrderUI = new AddOrderUI(_customersDataContext!);
                     await addOrderUI.Show();
                     break;
+                case "6":
+                    AddProductUI addProductUI = new AddProductUI(_productsDataContext!);
+                    await addProductUI.Show();
+                    break;
             }
         }
     }

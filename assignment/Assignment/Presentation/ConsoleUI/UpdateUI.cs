@@ -49,6 +49,10 @@ namespace Presentation.ConsoleUI
                     UpdateOrderUI updateOrderUI = new UpdateOrderUI(_customersDataContext!);
                     await updateOrderUI.Show();
                     break;
+                case "6":
+                    UpdateProductUI updateProductUI = new UpdateProductUI(_productsDataContext!);
+                    await updateProductUI.Show();
+                    break;
             }
         }
     }
