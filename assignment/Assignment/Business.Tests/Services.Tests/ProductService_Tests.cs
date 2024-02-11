@@ -45,10 +45,10 @@ namespace Business.Tests.Services.Tests
             await service.CreateProductAsync(product); //Lägger till den skapade produkten i databasen
 
             var result = await service.GetOneProductAsync("TestArticleNumber"); //Act delen, där jag hämtar en produkt efter artikelnumret
-            var nullresult = await service.GetOneProductAsync(""); //Här testar jag även ett artikelnummer som inte bör hittas
+            var nullResult = await service.GetOneProductAsync(""); //Här testar jag även ett artikelnummer som inte bör hittas
 
             Assert.Equal("TestArticleNumber", result.ArticleNumber); //Här kollar jag så att artikelnumret stämmer, och på så vis vet jag att produkten har hämtats
-            Assert.Null(nullresult); //Jag kollar även att det blir null på nullresult
+            Assert.Null(nullResult); //Jag kollar även att det blir null på nullresult
         }
 
         [Fact]
