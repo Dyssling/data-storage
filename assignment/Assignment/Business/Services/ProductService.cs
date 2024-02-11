@@ -23,6 +23,7 @@ namespace Business.Services
         public async Task<bool> CreateProductAsync(ProductDto product)
         {
             var categoryRepository = new CategoryRepository(_context);
+            var imageRepository = new ImageRepository(_context);
 
             try
             {
@@ -40,13 +41,28 @@ namespace Business.Services
                     categories.Add(result); //Här lagras kategorin i den "interna" listan som jag skapade ovan
                 }
 
+                ICollection<Image> images = new List<Image>();//Samma sak med bilderna
+
+                foreach (string imageURL in product.Images)
+                {
+                    var result = await imageRepository.GetOneAsync(x => x.ImageUrl == imageURL);
+                    if (result == null)
+                    {
+                        Image newImage = new Image() { ImageUrl = imageURL };
+                        await imageRepository.CreateAsync(newImage);
+                        result = await imageRepository.GetOneAsync(x => x.ImageUrl == imageURL);
+                    }
+                    images.Add(result);
+                }
+
                 Product productEntity = new Product() //ProductDto omvandlas till en entitet
                 {
                     ArticleNumber = product.ArticleNumber,
                     Name = product.Name,
                     Description = product.Description,
                     Price = product.Price,
-                    Categories = categories //Här hämtas den "interna" kategorilistan som tidigare skapades
+                    Categories = categories, //Här hämtas den "interna" kategorilistan som tidigare skapades
+                    Images = images //Och samma sak med bildlistan
                 };
 
                 var createResult = await _repository.CreateAsync(productEntity); //Sedan läggs Produkt entiteten till i databasen
@@ -68,10 +84,16 @@ namespace Business.Services
                 if (entity != null)
                 {
                     ICollection<string> categories = new List<string>(); //Skapar en lista där produktens kategorier kommer lagras
+                    ICollection<string> images = new List<string>(); //Och även med bilderna
 
                     foreach (Category category in entity.Categories) //Varje kategorinamn läggs till i listan
                     {
                         categories.Add(category.Name);
+                    }
+
+                    foreach (Image image in entity.Images) //Samma sak med bilderna
+                    {
+                        images.Add(image.ImageUrl);
                     }
 
                     ProductDto product = new ProductDto()
@@ -80,7 +102,8 @@ namespace Business.Services
                         Name = entity.Name,
                         Description = entity.Description,
                         Price = entity.Price,
-                        Categories = categories //Här sätts kategorilistan in som en property
+                        Categories = categories, //Här sätts kategorilistan in som en property
+                        Images = images //Samma med bilderna
                     };
 
                     return product;
@@ -106,10 +129,16 @@ namespace Business.Services
                     foreach (Product entity in entityList)
                     {
                         var categoryList = new List<string>(); //Här skapas en tom lista som kategorinamnen kommer lagras i
+                        var imageList = new List<string>(); //Samma med bilderna och dess URL
 
                         foreach (Category category in entity.Categories)
                         {
                             categoryList.Add(category.Name); //Kategorinamnet läggs till i listan
+                        }
+
+                        foreach (Image image in entity.Images) //Samma med bildernas URL
+                        {
+                            imageList.Add(image.ImageUrl);
                         }
 
                         var dto = new ProductDto()
@@ -118,7 +147,8 @@ namespace Business.Services
                             Name = entity.Name,
                             Description = entity.Description,
                             Price = entity.Price,
-                            Categories = categoryList //Kategorilistan sätts som en property
+                            Categories = categoryList, //Kategorilistan sätts som en property
+                            Images = imageList //Samma med bilderna
                         };
 
                         dtoList.Add(dto); //Slutligen läggs Dton till i Dto listan
@@ -139,6 +169,8 @@ namespace Business.Services
         {
             var categoryRepository = new CategoryRepository(_context);
             ICollection<Category> categories = new List<Category>();
+            var imageRepository = new ImageRepository(_context);
+            ICollection<Image> images = new List<Image>();
 
             try
             {
@@ -154,13 +186,26 @@ namespace Business.Services
                     categories.Add(result); //Här lagras kategorin i den "interna" listan som jag skapade ovan
                 }
 
+                foreach (string imageURL in product.Images) //Loopen kollar igenom alla givna kategorinamn i den nya produkten
+                {
+                    var result = await imageRepository.GetOneAsync(x => x.ImageUrl == imageURL); //Samma med bilderna
+                    if (result == null)
+                    {
+                        Image newImage = new Image() { ImageUrl = imageURL };
+                        await imageRepository.CreateAsync(newImage);
+                        result = await imageRepository.GetOneAsync(x => x.ImageUrl == imageURL);
+                    }
+                    images.Add(result);
+                }
+
                 var productEntity = new Product() //ProductDto omvandlas till en entitet
                 {
                     ArticleNumber = articleNumber, //Artikelnumret får inte ändras
                     Name = product.Name,
                     Description = product.Description,
                     Price = product.Price,
-                    Categories = categories //Här hämtas den "interna" kategorilistan som tidigare skapades
+                    Categories = categories, //Här hämtas den "interna" kategorilistan som tidigare skapades
+                    Images = images //Samma med bilderna
                 };
 
                 var updateResult = await _repository.UpdateAsync((x => x.ArticleNumber == articleNumber), productEntity); //Entiteten med det angivna artikelnumret (alltså det gamla) ersätts med med nya entiteten

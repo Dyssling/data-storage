@@ -13,5 +13,7 @@ namespace Business.Dtos
         public decimal Price { get; set; }
 
         public ICollection<string> Categories { get; set; } = new List<string>();
+
+        public ICollection<string> Images { get; set; } = new List<string>();
     }
 }

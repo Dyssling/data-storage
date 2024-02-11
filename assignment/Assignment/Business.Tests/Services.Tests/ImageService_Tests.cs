@@ -75,5 +75,35 @@ namespace Business.Tests.Services.Tests
             Assert.True(result); //Assert delen, där jag kollar om man får tillbaka true, vilket man bör få om allt gick som tänkt
             Assert.Null(getResult); //Här bör jag som sagt få tillbaka null
         }
+
+        [Fact]
+        public async Task DeleteImageAsync_ShouldDeleteImage_And_ReturnTrue()
+        {
+            var service = new ImageService(_context); //Arrange delen
+            var productService = new ProductService(_context); //Jag skapar även en ProductService instans för att jag vill se så att relationen mellan dessa fungerar som den ska
+            ImageDto image = new ImageDto()
+            {
+                ImageURL = "TestURL"
+            };
+            await service.CreateImageAsync(image);
+
+            ProductDto product = new ProductDto() //Här skapar jag en produkt som ska använda sig av samma kategori som nyss skapades, plus en ny kategori som också kommer skapas i CreateProduct metoden
+            {
+                ArticleNumber = "TestArticleNumber",
+                Name = "TestName",
+                Price = 10,
+                Categories = new List<string>() { "TestCategory" },
+                Images = new List<string>() { "TestURL", "AnotherTestURL" }
+            };
+            await productService.CreateProductAsync(product);
+
+            var result = await service.DeleteImageAsync("TestURL"); //Act delen, där jag tar bort entiteten med den angivna URLen
+            var falseResult = await service.DeleteImageAsync(""); //Den bör returnera false, eftersom denna URL inte finns
+            var allImages = await service.GetAllImagesAsync(); //Jag vill även se hur vilka bilder som nu finns
+
+            Assert.True(result); //Assert delen, där jag kollar om man får tillbaka ett true värde
+            Assert.False(falseResult); //Och ett false värde på den som inte kunde hittas
+            Assert.Equal("AnotherTestURL", allImages.First().ImageURL); //Den första bilden bör nu ha URLen AnotherTestURL, eftersom den föregående bilden har tagits bort
+        }
     }
 }
