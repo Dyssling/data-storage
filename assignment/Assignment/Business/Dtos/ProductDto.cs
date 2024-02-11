@@ -15,5 +15,7 @@ namespace Business.Dtos
         public ICollection<string> Categories { get; set; } = new List<string>();
 
         public ICollection<string> Images { get; set; } = new List<string>();
+
+        public ICollection<int> Reviews { get; set; } = new List<int>();
     }
 }

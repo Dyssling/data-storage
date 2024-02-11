@@ -24,6 +24,7 @@ namespace Business.Services
         {
             var categoryRepository = new CategoryRepository(_context);
             var imageRepository = new ImageRepository(_context);
+            var reviewRepository = new ReviewRepository(_context);
 
             try
             {
@@ -55,6 +56,20 @@ namespace Business.Services
                     images.Add(result);
                 }
 
+                ICollection<Review> reviews = new List<Review>();//Och reviews
+
+                foreach (int customerId in product.Reviews)
+                {
+                    var result = await reviewRepository.GetOneAsync(x => x.CustomerId == customerId);
+                    if (result == null)
+                    {
+                        Review newReview = new Review() { CustomerId = customerId };
+                        await reviewRepository.CreateAsync(newReview);
+                        result = await reviewRepository.GetOneAsync(x => x.CustomerId == customerId);
+                    }
+                    reviews.Add(result);
+                }
+
                 Product productEntity = new Product() //ProductDto omvandlas till en entitet
                 {
                     ArticleNumber = product.ArticleNumber,
@@ -62,7 +77,8 @@ namespace Business.Services
                     Description = product.Description,
                     Price = product.Price,
                     Categories = categories, //Här hämtas den "interna" kategorilistan som tidigare skapades
-                    Images = images //Och samma sak med bildlistan
+                    Images = images, //Och samma sak med bildlistan
+                    Reviews = reviews //Och reviews
                 };
 
                 var createResult = await _repository.CreateAsync(productEntity); //Sedan läggs Produkt entiteten till i databasen
@@ -85,6 +101,7 @@ namespace Business.Services
                 {
                     ICollection<string> categories = new List<string>(); //Skapar en lista där produktens kategorier kommer lagras
                     ICollection<string> images = new List<string>(); //Och även med bilderna
+                    ICollection<int> reviews = new List<int>(); //Och reviews
 
                     foreach (Category category in entity.Categories) //Varje kategorinamn läggs till i listan
                     {
@@ -96,6 +113,11 @@ namespace Business.Services
                         images.Add(image.ImageUrl);
                     }
 
+                    foreach (Review review in entity.Reviews) //Och reviews
+                    {
+                        reviews.Add(review.CustomerId);
+                    }
+
                     ProductDto product = new ProductDto()
                     {
                         ArticleNumber = entity.ArticleNumber,
@@ -103,7 +125,8 @@ namespace Business.Services
                         Description = entity.Description,
                         Price = entity.Price,
                         Categories = categories, //Här sätts kategorilistan in som en property
-                        Images = images //Samma med bilderna
+                        Images = images, //Samma med bilderna
+                        Reviews = reviews //Och reviews
                     };
 
                     return product;
@@ -130,6 +153,7 @@ namespace Business.Services
                     {
                         var categoryList = new List<string>(); //Här skapas en tom lista som kategorinamnen kommer lagras i
                         var imageList = new List<string>(); //Samma med bilderna och dess URL
+                        var reviewList = new List<int>(); //Och reviews och dess CustomerId
 
                         foreach (Category category in entity.Categories)
                         {
@@ -141,6 +165,11 @@ namespace Business.Services
                             imageList.Add(image.ImageUrl);
                         }
 
+                        foreach (Review review in entity.Reviews) //Och reviews
+                        {
+                            reviewList.Add(review.CustomerId);
+                        }
+
                         var dto = new ProductDto()
                         {
                             ArticleNumber = entity.ArticleNumber,
@@ -148,7 +177,8 @@ namespace Business.Services
                             Description = entity.Description,
                             Price = entity.Price,
                             Categories = categoryList, //Kategorilistan sätts som en property
-                            Images = imageList //Samma med bilderna
+                            Images = imageList, //Samma med bilderna
+                            Reviews = reviewList //Och reviews
                         };
 
                         dtoList.Add(dto); //Slutligen läggs Dton till i Dto listan
@@ -171,6 +201,8 @@ namespace Business.Services
             ICollection<Category> categories = new List<Category>();
             var imageRepository = new ImageRepository(_context);
             ICollection<Image> images = new List<Image>();
+            var reviewRepository = new ReviewRepository(_context);
+            ICollection<Review> reviews = new List<Review>();
 
             try
             {
@@ -186,9 +218,9 @@ namespace Business.Services
                     categories.Add(result); //Här lagras kategorin i den "interna" listan som jag skapade ovan
                 }
 
-                foreach (string imageURL in product.Images) //Loopen kollar igenom alla givna kategorinamn i den nya produkten
+                foreach (string imageURL in product.Images) //Samma med bilderna
                 {
-                    var result = await imageRepository.GetOneAsync(x => x.ImageUrl == imageURL); //Samma med bilderna
+                    var result = await imageRepository.GetOneAsync(x => x.ImageUrl == imageURL);
                     if (result == null)
                     {
                         Image newImage = new Image() { ImageUrl = imageURL };
@@ -198,6 +230,18 @@ namespace Business.Services
                     images.Add(result);
                 }
 
+                foreach (int customerId in product.Reviews) //Samma med bilderna
+                {
+                    var result = await reviewRepository.GetOneAsync(x => x.CustomerId == customerId);
+                    if (result == null)
+                    {
+                        Review newReview = new Review() { CustomerId = customerId };
+                        await reviewRepository.CreateAsync(newReview);
+                        result = await reviewRepository.GetOneAsync(x => x.CustomerId == customerId);
+                    }
+                    reviews.Add(result);
+                }
+
                 var productEntity = new Product() //ProductDto omvandlas till en entitet
                 {
                     ArticleNumber = articleNumber, //Artikelnumret får inte ändras
@@ -205,7 +249,8 @@ namespace Business.Services
                     Description = product.Description,
                     Price = product.Price,
                     Categories = categories, //Här hämtas den "interna" kategorilistan som tidigare skapades
-                    Images = images //Samma med bilderna
+                    Images = images, //Samma med bilderna
+                    Reviews = reviews //Och reviews
                 };
 
                 var updateResult = await _repository.UpdateAsync((x => x.ArticleNumber == articleNumber), productEntity); //Entiteten med det angivna artikelnumret (alltså det gamla) ersätts med med nya entiteten
