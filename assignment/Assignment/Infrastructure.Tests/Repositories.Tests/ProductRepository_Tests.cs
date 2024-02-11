@@ -54,7 +54,7 @@ namespace Infrastructure.Tests.Repositories.Tests
             var repository = new ProductRepository(_context); //Arrange delen
             var entity = new Product() { Name = "Test", ArticleNumber = "" };
             await repository.CreateAsync(entity);
-            var newEntity = new Product() { ArticleNumber = entity.ArticleNumber, Name = "NewTest", Categories = entity.Categories, Description = entity.Description, Price = entity.Price, ProductImages = entity.ProductImages, ProductReviews = entity.ProductReviews }; //Och här skapar jag den nya entiteten, vars värden ska ersätta den gamla entitetens värden. Name är det enda värdet som ska uppdateras.
+            var newEntity = new Product() { ArticleNumber = entity.ArticleNumber, Name = "NewTest", Categories = entity.Categories, Description = entity.Description, Price = entity.Price }; //Och här skapar jag den nya entiteten, vars värden ska ersätta den gamla entitetens värden. Name är det enda värdet som ska uppdateras.
 
             var result = await repository.UpdateAsync(x => x.Name == "Test", newEntity); //Act delen, där jag uppdaterar den gamla entiteten med den nya
 

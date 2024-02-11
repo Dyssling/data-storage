@@ -54,7 +54,7 @@ namespace Infrastructure.Tests.Repositories.Tests
             var repository = new ImageRepository(_context); //Arrange delen
             var entity = new Image() { ImageUrl = "Test" };
             await repository.CreateAsync(entity);
-            var newEntity = new Image() { Id = entity.Id, ImageUrl = "NewTest", ProductImage = entity.ProductImage }; //Och här skapar jag den nya entiteten, vars värden ska ersätta den gamla entitetens värden. Id och ProductImage ska inte uppdateras.
+            var newEntity = new Image() { Id = entity.Id, ImageUrl = "NewTest" }; //Och här skapar jag den nya entiteten, vars värden ska ersätta den gamla entitetens värden. Id och ProductImage ska inte uppdateras.
 
             var result = await repository.UpdateAsync(x => x.ImageUrl == "Test", newEntity); //Act delen, där jag uppdaterar den gamla entiteten med den nya
 

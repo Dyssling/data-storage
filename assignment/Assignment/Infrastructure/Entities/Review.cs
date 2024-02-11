@@ -15,5 +15,5 @@ public partial class Review
 
     public string? Content { get; set; }
 
-    public virtual ProductReview? ProductReview { get; set; }
+    public virtual ICollection<Product> ArticleNumbers { get; set; } = new List<Product>();
 }

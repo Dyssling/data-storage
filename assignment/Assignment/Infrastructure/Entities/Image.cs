@@ -9,5 +9,5 @@ public partial class Image
 
     public string ImageUrl { get; set; } = null!;
 
-    public virtual ProductImage? ProductImage { get; set; }
+    public virtual ICollection<Product> ArticleNumbers { get; set; } = new List<Product>();
 }
