@@ -51,7 +51,7 @@ namespace Business.Services
                 {
                     CategoryDto category = new CategoryDto()
                     {
-                        Name = entity.Name,
+                        Name = entity.Name
                     };
 
                     return category;

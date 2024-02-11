@@ -20,7 +20,7 @@ CREATE TABLE Categories (
 
 CREATE TABLE Images (
 	Id int identity not null primary key,
-	ImageURL nvarchar(max) not null
+	ImageURL nvarchar(450) not null unique
 )
 
 CREATE TABLE Reviews (

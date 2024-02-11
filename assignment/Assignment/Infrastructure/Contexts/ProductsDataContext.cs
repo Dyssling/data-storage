@@ -28,16 +28,18 @@ public partial class ProductsDataContext : DbContext
     {
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Categori__3214EC07A0429660");
+            entity.HasKey(e => e.Id).HasName("PK__Categori__3214EC07D62A5F23");
 
-            entity.HasIndex(e => e.Name, "UQ__Categori__737584F654F859FC").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__Categori__737584F63CEB1C46").IsUnique();
 
             entity.Property(e => e.Name).HasMaxLength(256);
         });
 
         modelBuilder.Entity<Image>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Images__3214EC07AE5CB1BD");
+            entity.HasKey(e => e.Id).HasName("PK__Images__3214EC0737D8141A");
+
+            entity.HasIndex(e => e.ImageUrl, "UQ__Images__372DE2C507FE6771").IsUnique();
 
             entity.Property(e => e.ImageUrl).HasColumnName("ImageURL");
 
@@ -47,14 +49,14 @@ public partial class ProductsDataContext : DbContext
                     r => r.HasOne<Product>().WithMany()
                         .HasForeignKey("ArticleNumber")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("FK__ProductIm__Artic__51300E55"),
+                        .HasConstraintName("FK__ProductIm__Artic__70A8B9AE"),
                     l => l.HasOne<Image>().WithMany()
                         .HasForeignKey("ImageId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("FK__ProductIm__Image__503BEA1C"),
+                        .HasConstraintName("FK__ProductIm__Image__6FB49575"),
                     j =>
                     {
-                        j.HasKey("ImageId", "ArticleNumber").HasName("PK__ProductI__56DF66189C976FBD");
+                        j.HasKey("ImageId", "ArticleNumber").HasName("PK__ProductI__56DF6618A1F259FB");
                         j.ToTable("ProductImages");
                         j.IndexerProperty<string>("ArticleNumber").HasMaxLength(256);
                     });
@@ -62,7 +64,7 @@ public partial class ProductsDataContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.ArticleNumber).HasName("PK__Products__3C99114398E5DE18");
+            entity.HasKey(e => e.ArticleNumber).HasName("PK__Products__3C991143848F2CC2");
 
             entity.Property(e => e.ArticleNumber).HasMaxLength(256);
             entity.Property(e => e.Price).HasColumnType("money");
@@ -73,14 +75,14 @@ public partial class ProductsDataContext : DbContext
                     r => r.HasOne<Category>().WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("FK__ProductCa__Categ__4D5F7D71"),
+                        .HasConstraintName("FK__ProductCa__Categ__6CD828CA"),
                     l => l.HasOne<Product>().WithMany()
                         .HasForeignKey("ArticleNumber")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("FK__ProductCa__Artic__4C6B5938"),
+                        .HasConstraintName("FK__ProductCa__Artic__6BE40491"),
                     j =>
                     {
-                        j.HasKey("ArticleNumber", "CategoryId").HasName("PK__ProductC__9D0982E303406A3F");
+                        j.HasKey("ArticleNumber", "CategoryId").HasName("PK__ProductC__9D0982E3015C7CA0");
                         j.ToTable("ProductCategories");
                         j.IndexerProperty<string>("ArticleNumber").HasMaxLength(256);
                     });
@@ -88,7 +90,7 @@ public partial class ProductsDataContext : DbContext
 
         modelBuilder.Entity<Review>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Reviews__3214EC0747219ABE");
+            entity.HasKey(e => e.Id).HasName("PK__Reviews__3214EC0753E328B4");
 
             entity.HasMany(d => d.ArticleNumbers).WithMany(p => p.Reviews)
                 .UsingEntity<Dictionary<string, object>>(
@@ -96,14 +98,14 @@ public partial class ProductsDataContext : DbContext
                     r => r.HasOne<Product>().WithMany()
                         .HasForeignKey("ArticleNumber")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("FK__ProductRe__Artic__55009F39"),
+                        .HasConstraintName("FK__ProductRe__Artic__74794A92"),
                     l => l.HasOne<Review>().WithMany()
                         .HasForeignKey("ReviewId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("FK__ProductRe__Revie__540C7B00"),
+                        .HasConstraintName("FK__ProductRe__Revie__73852659"),
                     j =>
                     {
-                        j.HasKey("ReviewId", "ArticleNumber").HasName("PK__ProductR__5775E8DAE43F1BE9");
+                        j.HasKey("ReviewId", "ArticleNumber").HasName("PK__ProductR__5775E8DA7B0D9419");
                         j.ToTable("ProductReviews");
                         j.IndexerProperty<string>("ArticleNumber").HasMaxLength(256);
                     });

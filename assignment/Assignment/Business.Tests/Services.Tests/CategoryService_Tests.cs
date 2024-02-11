@@ -33,14 +33,14 @@ namespace Business.Tests.Services.Tests
             var service = new CategoryService(_context); //Arrange delen
             CategoryDto category = new CategoryDto()
             {
-                Name = "TestName",
+                Name = "TestName"
             };
             await service.CreateCategoryAsync(category); //Lägger till den skapade entiteten i databasen
 
             var result = await service.GetOneCategoryAsync("TestName"); //Act delen, där jag hämtar en entitet efter namnet
             var nullResult = await service.GetOneCategoryAsync(""); //Här testar jag även ett namn som inte bör hittas
 
-            Assert.Equal("TestName", result.Name); //Här kollar jag så att artikelnumret stämmer, och på så vis vet jag att produkten har hämtats
+            Assert.Equal("TestName", result.Name); //Här kollar jag så att namnet stämmer, och på så vis vet jag att kategorin har hämtats
             Assert.Null(nullResult); //Jag kollar även att det blir null på nullresult
         }
 
