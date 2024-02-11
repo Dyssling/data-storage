@@ -50,5 +50,24 @@ namespace Business.Tests.Services.Tests
             Assert.Equal("TestArticleNumber", result.ArticleNumber); //Här kollar jag så att artikelnumret stämmer, och på så vis vet jag att produkten har hämtats
             Assert.Null(nullresult); //Jag kollar även att det blir null på nullresult
         }
+
+        [Fact]
+        public async Task GetAllProductsAsync_ShouldGetAllProducts_And_ReturnIEnumerable()
+        {
+            var service = new ProductService(_context); //Arrange delen
+            ProductDto product = new ProductDto()
+            {
+                ArticleNumber = "TestArticleNumber",
+                Name = "TestName",
+                Price = 10,
+                Categories = new List<string>() { "TestCategory" }
+            };
+            await service.CreateProductAsync(product);
+
+            var result = await service.GetAllProductsAsync(); //Act delen
+
+            Assert.Single(result); //Jag kollar om listan innehåller ett element
+            Assert.Equal("TestCategory", result.First().Categories.First()); //Och även om kategorilistan stämmer överens
+        }
     }
 }

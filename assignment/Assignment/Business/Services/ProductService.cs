@@ -2,6 +2,7 @@
 using Infrastructure.Contexts;
 using Infrastructure.Entities;
 using Infrastructure.Repositories;
+using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 using System.Linq.Expressions;
 
@@ -89,6 +90,48 @@ namespace Business.Services
                 Debug.WriteLine(ex.Message);
             }
             return null!; //Om ingen produkt hittas så returneras ett null värde
+        }
+
+        public async Task<IEnumerable<ProductDto>> GetAllProductsAsync()
+        {
+            try
+            {
+                var entityList = await _repository.GetAllAsync(); //Jag hämtar listan med entiteter
+
+                if (!entityList.IsNullOrEmpty()) //Kollar om det finns något innehåll i listan
+                {
+                    var dtoList = new List<ProductDto>();//Sedan skapar jag en lista där Dto varianterna kommer lagras
+
+                    foreach (Product entity in entityList)
+                    {
+                        var categoryList = new List<string>(); //Här skapas en tom lista som kategorinamnen kommer lagras i
+
+                        foreach (Category category in entity.Categories)
+                        {
+                            categoryList.Add(category.Name); //Kategorinamnet läggs till i listan
+                        }
+
+                        var dto = new ProductDto()
+                        {
+                            ArticleNumber = entity.ArticleNumber,
+                            Name = entity.Name,
+                            Description = entity.Description,
+                            Price = entity.Price,
+                            Categories = categoryList //Kategorilistan sätts som en property
+                        };
+
+                        dtoList.Add(dto); //Slutligen läggs Dton till i Dto listan
+                    }
+
+                    return dtoList;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
+            return new List<ProductDto>(); //Om listan är tom, eller om något gick snett, så får man tillbaka en tom lista.
         }
     }
 }
