@@ -41,5 +41,39 @@ namespace Business.Tests.Services.Tests
             Assert.Equal("TestURL", result.ImageURL); //Här kollar jag så att URlen stämmer, och på så vis vet jag att bilden har hämtats
             Assert.Null(nullResult); //Jag kollar även att det blir null på nullresult
         }
+
+        [Fact]
+        public async Task GetAllImagesAsync_ShouldGetAllImages_And_ReturnIEnumerable()
+        {
+            var service = new ImageService(_context); //Arrange delen
+            ImageDto image = new ImageDto()
+            {
+                ImageURL = "TestURL"
+            };
+            await service.CreateImageAsync(image);
+
+            var result = await service.GetAllImagesAsync(); //Act delen
+
+            Assert.Single(result); //Jag kollar om listan innehåller ett element
+            Assert.Equal("TestURL", result.First().ImageURL); //Och även om URLen stämmer överens
+        }
+
+        [Fact]
+        public async Task UpdateImageAsync_ShouldUpdateImage_And_ReturnTrue()
+        {
+            var service = new ImageService(_context); //Arrange delen
+            ImageDto image = new ImageDto()
+            {
+                ImageURL = "TestURL"
+            };
+            await service.CreateImageAsync(image);
+            image.ImageURL = "NewURL"; //Här ändrar jag URLen på bilden
+
+            var result = await service.UpdateImageAsync("TestURL", image); //Act delen, där jag uppdaterar den gamla entiteten med den nya infon
+            var getResult = await service.GetOneImageAsync("TestURL"); //Här hämtas entiteten med det gamla namnet, vilket kommer returnera null eftersom den inte bör finnas längre
+
+            Assert.True(result); //Assert delen, där jag kollar om man får tillbaka true, vilket man bör få om allt gick som tänkt
+            Assert.Null(getResult); //Här bör jag som sagt få tillbaka null
+        }
     }
 }

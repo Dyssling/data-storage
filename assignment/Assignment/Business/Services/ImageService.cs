@@ -2,6 +2,7 @@
 using Infrastructure.Contexts;
 using Infrastructure.Entities;
 using Infrastructure.Repositories;
+using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 
 namespace Business.Services
@@ -61,6 +62,62 @@ namespace Business.Services
                 Debug.WriteLine(ex.Message);
             }
             return null!; //Om ingen entitet hittas, eller om något gick snett så returneras ett null värde
+        }
+
+        public async Task<IEnumerable<ImageDto>> GetAllImagesAsync()
+        {
+            try
+            {
+                var entityList = await _repository.GetAllAsync(); //Jag hämtar listan med entiteter
+
+                if (!entityList.IsNullOrEmpty()) //Kollar om det finns något innehåll i listan
+                {
+                    var dtoList = new List<ImageDto>();//Sedan skapar jag en lista där Dto varianterna kommer lagras
+
+                    foreach (Image entity in entityList)
+                    {
+                        var dto = new ImageDto()
+                        {
+                            ImageURL = entity.ImageUrl
+                        };
+
+                        dtoList.Add(dto); //Slutligen läggs Dton till i Dto listan
+                    }
+
+                    return dtoList;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
+            return new List<ImageDto>(); //Om listan är tom, eller om något gick snett, så får man tillbaka en tom lista.
+        }
+
+        public async Task<bool> UpdateImageAsync(string imageURL, ImageDto image)
+        {
+            try
+            {
+                var getEntity = await _repository.GetOneAsync(x => x.ImageUrl == imageURL);
+
+                var imageEntity = new Image() //Dto omvandlas till en entitet
+                {
+                    Id = getEntity.Id,
+                    ImageUrl = image.ImageURL,
+                    ArticleNumbers = getEntity.ArticleNumbers
+                };
+
+                var updateResult = await _repository.UpdateAsync((x => x.ImageUrl == imageURL), imageEntity); //Entiteten med det angivna namnet (alltså det gamla) ersätts med med nya entiteten
+
+                return updateResult; //Om entiteten hittades så returneras true, annars false
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
+            return false; //Om något gick snett så returneras false
         }
     }
 }
