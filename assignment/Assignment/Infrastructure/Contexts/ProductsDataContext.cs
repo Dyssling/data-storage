@@ -28,6 +28,7 @@ public partial class ProductsDataContext : DbContext
 
     public virtual DbSet<Review> Reviews { get; set; }
 
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Category>(entity =>
@@ -58,11 +59,11 @@ public partial class ProductsDataContext : DbContext
                     "ProductCategory",
                     r => r.HasOne<Category>().WithMany()
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .OnDelete(DeleteBehavior.Cascade) //Jag hatar mitt liv allt jag behövde göra var att ändra denna till Cascade ajsdhakjshdads
                         .HasConstraintName("FK__ProductCa__Categ__797309D9"),
                     l => l.HasOne<Product>().WithMany()
                         .HasForeignKey("ArticleNumber")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK__ProductCa__Artic__787EE5A0"),
                     j =>
                     {
