@@ -53,6 +53,10 @@ namespace Presentation.ConsoleUI
                     UpdateProductUI updateProductUI = new UpdateProductUI(_productsDataContext!);
                     await updateProductUI.Show();
                     break;
+                case "7":
+                    UpdateReviewUI updateReviewUI = new UpdateReviewUI(_productsDataContext!);
+                    await updateReviewUI.Show();
+                    break;
             }
         }
     }

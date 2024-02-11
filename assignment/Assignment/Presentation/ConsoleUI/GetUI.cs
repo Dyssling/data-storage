@@ -52,6 +52,10 @@ namespace Presentation.ConsoleUI
                     GetOneProductUI getOneProductUI = new GetOneProductUI(_productsDataContext!);
                     await getOneProductUI.Show();
                     break;
+                case "7":
+                    GetOneReviewUI getOneReviewUI = new GetOneReviewUI(_productsDataContext!);
+                    await getOneReviewUI.Show();
+                    break;
             }
         }
     }

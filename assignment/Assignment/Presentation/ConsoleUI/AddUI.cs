@@ -54,6 +54,10 @@ namespace Presentation.ConsoleUI
                     AddProductUI addProductUI = new AddProductUI(_productsDataContext!);
                     await addProductUI.Show();
                     break;
+                case "7":
+                    AddReviewUI addReviewUI = new AddReviewUI(_productsDataContext!);
+                    await addReviewUI.Show();
+                    break;
             }
         }
     }

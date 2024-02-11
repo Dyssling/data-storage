@@ -52,6 +52,10 @@ namespace Presentation.ConsoleUI
                     GetAllProductsUI getAllProductsUI = new GetAllProductsUI(_productsDataContext!);
                     await getAllProductsUI.Show();
                     break;
+                case "7":
+                    GetAllReviewsUI getAllReviewsUI = new GetAllReviewsUI(_productsDataContext!);
+                    await getAllReviewsUI.Show();
+                    break;
             }
         }
     }

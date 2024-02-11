@@ -52,6 +52,10 @@ namespace Presentation.ConsoleUI
                     DeleteProductUI deleteProductUI = new DeleteProductUI(_productsDataContext!);
                     await deleteProductUI.Show();
                     break;
+                case "7":
+                    DeleteReviewUI deleteReviewUI = new DeleteReviewUI(_productsDataContext!);
+                    await deleteReviewUI.Show();
+                    break;
             }
         }
     }
