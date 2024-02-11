@@ -44,6 +44,10 @@ namespace Presentation.ConsoleUI
                     GetAllImagesUI getAllImagesUI = new GetAllImagesUI(_productsDataContext!);
                     await getAllImagesUI.Show();
                     break;
+                case "5":
+                    GetAllOrdersUI getAllOrdersUI = new GetAllOrdersUI(_customersDataContext!);
+                    await getAllOrdersUI.Show();
+                    break;
             }
         }
     }
