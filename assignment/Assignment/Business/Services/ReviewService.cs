@@ -107,19 +107,22 @@ namespace Business.Services
             {
                 var getEntity = await _repository.GetOneAsync(x => x.Id == id);
 
-                var reviewEntity = new Review() //Dto omvandlas till en entitet
+                if (getEntity != null)
                 {
-                    Id = getEntity.Id,
-                    CustomerId = review.CustomerId,
-                    Rating = review.Rating,
-                    Title = review.Title,
-                    Content = review.Content,
-                    ArticleNumbers = getEntity.ArticleNumbers
-                };
+                    var reviewEntity = new Review() //Dto omvandlas till en entitet
+                    {
+                        Id = getEntity.Id,
+                        CustomerId = review.CustomerId,
+                        Rating = review.Rating,
+                        Title = review.Title,
+                        Content = review.Content,
+                        ArticleNumbers = getEntity.ArticleNumbers
+                    };
 
-                var updateResult = await _repository.UpdateAsync((x => x.Id == id), reviewEntity); //Entiteten med det angivna Id't ersätts med med nya entiteten
+                    var updateResult = await _repository.UpdateAsync((x => x.Id == id), reviewEntity); //Entiteten med det angivna Id't ersätts med med nya entiteten
 
-                return updateResult; //Om entiteten hittades så returneras true, annars false
+                    return updateResult; //Om entiteten hittades så returneras true, annars false
+                }
             }
             catch (Exception ex)
             {

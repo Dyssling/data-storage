@@ -101,16 +101,19 @@ namespace Business.Services
             {
                 var getEntity = await _repository.GetOneAsync(x => x.Name == name);
 
-                var categoryEntity = new Category() //Dto omvandlas till en entitet
+                if (getEntity != null)
                 {
-                    Id = getEntity.Id,
-                    Name = category.Name,
-                    ArticleNumbers = getEntity.ArticleNumbers
-                };
+                    var categoryEntity = new Category() //Dto omvandlas till en entitet
+                    {
+                        Id = getEntity.Id,
+                        Name = category.Name,
+                        ArticleNumbers = getEntity.ArticleNumbers
+                    };
 
-                var updateResult = await _repository.UpdateAsync((x => x.Name == name), categoryEntity); //Entiteten med det angivna namnet (alltså det gamla) ersätts med med nya entiteten
+                    var updateResult = await _repository.UpdateAsync((x => x.Name == name), categoryEntity); //Entiteten med det angivna namnet (alltså det gamla) ersätts med med nya entiteten
 
-                return updateResult; //Om entiteten hittades så returneras true, annars false
+                    return updateResult; //Om entiteten hittades så returneras true, annars false
+                }
             }
             catch (Exception ex)
             {
