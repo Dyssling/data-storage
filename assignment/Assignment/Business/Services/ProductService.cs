@@ -48,8 +48,8 @@ namespace Business.Services
                     Categories = categories //Här hämtas den "interna" kategorilistan som tidigare skapades
                 };
 
-                await _repository.CreateAsync(productEntity); //Sedan läggs Produkt entiteten till i databasen
-                return true;
+                var createResult = await _repository.CreateAsync(productEntity); //Sedan läggs Produkt entiteten till i databasen
+                return createResult; //Om den lyckades så får man true, annars false
             }
             catch (Exception ex)
             {
@@ -155,23 +155,38 @@ namespace Business.Services
 
                 var productEntity = new Product() //ProductDto omvandlas till en entitet
                 {
-                    ArticleNumber = product.ArticleNumber,
+                    ArticleNumber = articleNumber, //Artikelnumret får inte ändras
                     Name = product.Name,
                     Description = product.Description,
                     Price = product.Price,
                     Categories = categories //Här hämtas den "interna" kategorilistan som tidigare skapades
                 };
 
-                await _repository.UpdateAsync(x => x.ArticleNumber == articleNumber, productEntity); //Entiteten med det givna artikelnumret (alltså det gamla) ersätts med med nya entiteten
+                var updateResult = await _repository.UpdateAsync((x => x.ArticleNumber == articleNumber), productEntity); //Entiteten med det angivna artikelnumret (alltså det gamla) ersätts med med nya entiteten
 
-                return true;
+                return updateResult; //Om entiteten hittades så returneras true, annars false
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }
 
-            return false;
+            return false; //Om något gick snett så returneras false
+        }
+
+        public async Task<bool> DeleteProductAsync(string articleNumber)
+        {
+            try
+            {
+                var result = await _repository.DeleteAsync(x => x.ArticleNumber == articleNumber);
+
+                return result; //Om entiteten kunde hittas så returneras true, annars false
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            return false; //Och om något gick snett så returneras false
         }
     }
 }

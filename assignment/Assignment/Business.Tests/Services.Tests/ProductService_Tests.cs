@@ -83,14 +83,36 @@ namespace Business.Tests.Services.Tests
                 Categories = new List<string>() { "TestCategory" }
             };
             await service.CreateProductAsync(product);
-            product.ArticleNumber = "NewArticleNumber"; //Här ändrar jag artikelnumret på produkten
+            product.ArticleNumber = "NewArticleNumber"; //Här ändrar jag artikelnumret på produkten, vilket man inte får göra
             product.Categories.Add("NewCategory"); //Och lägger till en ny kategori i produktens kategori-lista
 
             var result = await service.UpdateProductAsync("TestArticleNumber", product); //Act delen, där jag uppdaterar den gamla produkten med den nya infon
+            var getResult = await service.GetOneProductAsync("NewArticleNumber"); //Här hämtas entiteten med det nya artikelnumret, vilket kommer returnera null eftersom man inte får ändra artikelnumret
             Category category = await categoryRepository.GetOneAsync(x => x.Name == "NewCategory"); //Jag hämtar även den nya kategorin
 
             Assert.True(result); //Assert delen, där jag kollar om man får tillbaka true, vilket man bör få om allt gick som tänkt
+            Assert.Null(getResult); //Här bör jag som sagt få tillbaka null
             Assert.Equal("NewCategory", category.Name); //Jag kollar även om kategorin har skapats, genom att jämföra namnen
+        }
+
+        [Fact]
+        public async Task DeleteProductAsync_ShouldDeleteProduct_And_ReturnTrue()
+        {
+            var service = new ProductService(_context); //Arrange delen
+            ProductDto product = new ProductDto()
+            {
+                ArticleNumber = "TestArticleNumber",
+                Name = "TestName",
+                Price = 10,
+                Categories = new List<string>() { "TestCategory" }
+            };
+            await service.CreateProductAsync(product);
+
+            var result = await service.DeleteProductAsync("TestArticleNumber"); //Act delen, där jag tar bort entiteten med det angivna artikelnumret
+            var falseResult = await service.DeleteProductAsync(""); //Den bör returnera false, eftersom detta artikelnumret inte finns
+
+            Assert.True(result); //Assert delen, där jag kollar om man får tillbaka ett true värde
+            Assert.False(falseResult); //Och ett false värde på den som inte kunde hittas
         }
     }
 }

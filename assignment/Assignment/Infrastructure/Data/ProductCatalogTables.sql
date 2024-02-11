@@ -37,6 +37,18 @@ CREATE TABLE ProductCategories (
 	primary key (ArticleNumber, CategoryId)
 )
 
+ALTER TABLE ProductCategories
+ADD CONSTRAINT FK_ProductCategories_Products
+FOREIGN KEY (ArticleNumber)
+REFERENCES Products(ArticleNumber)
+ON DELETE CASCADE;
+
+ALTER TABLE ProductCategories
+ADD CONSTRAINT FK_ProductCategories_Categories
+FOREIGN KEY (CategoryId)
+REFERENCES Categories(Id)
+ON DELETE CASCADE;
+
 CREATE TABLE ProductImages (
 	ImageId int not null primary key references Images(Id),
 	ArticleNumber nvarchar(256) not null references Products(ArticleNumber) --ArticleNumber behöver inte vara en nyckel här, eftersom varje ImageId ändå bara kommer finnas en gång i tabellen
