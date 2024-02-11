@@ -77,5 +77,34 @@ namespace Business.Tests.Services.Tests
             Assert.True(result); //Assert delen, där jag kollar om man får tillbaka true, vilket man bör få om allt gick som tänkt
             Assert.Null(getResult); //Här bör jag som sagt få tillbaka null
         }
+
+        [Fact]
+        public async Task DeleteCategoryAsync_ShouldDeleteCategory_And_ReturnTrue()
+        {
+            var service = new CategoryService(_context); //Arrange delen
+            var productService = new ProductService(_context); //Jag skapar även en ProductService instans för att jag vill se så att relationen mellan dessa fungerar som den ska
+            CategoryDto category = new CategoryDto()
+            {
+                Name = "TestName"
+            };
+            await service.CreateCategoryAsync(category);
+
+            ProductDto product = new ProductDto() //Här skapar jag en produkt som ska använda sig av samma kategori som nyss skapades, plus en ny kategori som också kommer skapas i CreateProduct metoden
+            {
+                ArticleNumber = "TestArticleNumber",
+                Name = "TestName",
+                Price = 10,
+                Categories = new List<string>() { "TestName", "AnotherTestCategory" }
+            };
+            await productService.CreateProductAsync(product);
+
+            var result = await service.DeleteCategoryAsync("TestName"); //Act delen, där jag tar bort entiteten med det angivna namnet
+            var falseResult = await service.DeleteCategoryAsync(""); //Den bör returnera false, eftersom detta namnet inte finns
+            var allCategories = await service.GetAllCategoriesAsync(); //Jag vill även se hur vilka kategorier som nu finns
+
+            Assert.True(result); //Assert delen, där jag kollar om man får tillbaka ett true värde
+            Assert.False(falseResult); //Och ett false värde på den som inte kunde hittas
+            Assert.Equal("AnotherTestCategory", allCategories.First().Name); //Den första kategorin bör nu heta AnotherTestCategory, eftersom den föregående kategorin har tagits bort
+        }
     }
 }

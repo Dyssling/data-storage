@@ -119,5 +119,20 @@ namespace Business.Services
 
             return false; //Om något gick snett så returneras false
         }
+
+        public async Task<bool> DeleteCategoryAsync(string name)
+        {
+            try
+            {
+                var result = await _repository.DeleteAsync(x => x.Name == name);
+
+                return result; //Om entiteten kunde hittas så returneras true, annars false
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            return false; //Och om något gick snett så returneras false
+        }
     }
 }
