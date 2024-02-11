@@ -133,5 +133,45 @@ namespace Business.Services
 
             return new List<ProductDto>(); //Om listan är tom, eller om något gick snett, så får man tillbaka en tom lista.
         }
+
+        public async Task<bool> UpdateProductAsync(string articleNumber, ProductDto product)
+        {
+            var categoryRepository = new CategoryRepository(_context);
+            ICollection<Category> categories = new List<Category>();
+
+            try
+            {
+                foreach (string categoryName in product.Categories) //Loopen kollar igenom alla givna kategorinamn i den nya produkten
+                {
+                    var result = await categoryRepository.GetOneAsync(x => x.Name == categoryName); //Här kollar jag om en kategori redan finns med det givna namnet
+                    if (result == null) //Om kategorin inte finns
+                    {
+                        Category newCategory = new Category() { Name = categoryName }; //Så skapar jag kategorin
+                        await categoryRepository.CreateAsync(newCategory); //Och lägger till den i databasen
+                        result = await categoryRepository.GetOneAsync(x => x.Name == categoryName); //Och sedan hämtas en result/entitet igen (denna gången finns den)
+                    }
+                    categories.Add(result); //Här lagras kategorin i den "interna" listan som jag skapade ovan
+                }
+
+                var productEntity = new Product() //ProductDto omvandlas till en entitet
+                {
+                    ArticleNumber = product.ArticleNumber,
+                    Name = product.Name,
+                    Description = product.Description,
+                    Price = product.Price,
+                    Categories = categories //Här hämtas den "interna" kategorilistan som tidigare skapades
+                };
+
+                await _repository.UpdateAsync(x => x.ArticleNumber == articleNumber, productEntity); //Entiteten med det givna artikelnumret (alltså det gamla) ersätts med med nya entiteten
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
+            return false;
+        }
     }
 }

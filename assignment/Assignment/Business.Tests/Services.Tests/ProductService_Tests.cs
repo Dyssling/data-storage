@@ -69,5 +69,28 @@ namespace Business.Tests.Services.Tests
             Assert.Single(result); //Jag kollar om listan innehåller ett element
             Assert.Equal("TestCategory", result.First().Categories.First()); //Och även om kategorilistan stämmer överens
         }
+
+        [Fact]
+        public async Task UpdateProductAsync_ShouldUpdateProductAndCreateNewCategoryIfNeeded_And_ReturnTrue()
+        {
+            var service = new ProductService(_context); //Arrange delen
+            var categoryRepository = new CategoryRepository(_context);
+            ProductDto product = new ProductDto()
+            {
+                ArticleNumber = "TestArticleNumber",
+                Name = "TestName",
+                Price = 10,
+                Categories = new List<string>() { "TestCategory" }
+            };
+            await service.CreateProductAsync(product);
+            product.ArticleNumber = "NewArticleNumber"; //Här ändrar jag artikelnumret på produkten
+            product.Categories.Add("NewCategory"); //Och lägger till en ny kategori i produktens kategori-lista
+
+            var result = await service.UpdateProductAsync("TestArticleNumber", product); //Act delen, där jag uppdaterar den gamla produkten med den nya infon
+            Category category = await categoryRepository.GetOneAsync(x => x.Name == "NewCategory"); //Jag hämtar även den nya kategorin
+
+            Assert.True(result); //Assert delen, där jag kollar om man får tillbaka true, vilket man bör få om allt gick som tänkt
+            Assert.Equal("NewCategory", category.Name); //Jag kollar även om kategorin har skapats, genom att jämföra namnen
+        }
     }
 }
