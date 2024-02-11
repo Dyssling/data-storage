@@ -59,5 +59,23 @@ namespace Business.Tests.Services.Tests
             Assert.Single(result); //Jag kollar om listan innehåller ett element
             Assert.Equal("TestName", result.First().Name); //Och även om namnet stämmer överens
         }
+
+        [Fact]
+        public async Task UpdateCategoryAsync_ShouldUpdateCategory_And_ReturnTrue()
+        {
+            var service = new CategoryService(_context); //Arrange delen
+            CategoryDto category = new CategoryDto()
+            {
+                Name = "TestName"
+            };
+            await service.CreateCategoryAsync(category);
+            category.Name = "NewArticleNumber"; //Här ändrar jag namnet på kategorin
+
+            var result = await service.UpdateCategoryAsync("TestName", category); //Act delen, där jag uppdaterar den gamla entiteten med den nya infon
+            var getResult = await service.GetOneCategoryAsync("TestName"); //Här hämtas entiteten med det gamla namnet, vilket kommer returnera null eftersom den inte bör finnas längre
+
+            Assert.True(result); //Assert delen, där jag kollar om man får tillbaka true, vilket man bör få om allt gick som tänkt
+            Assert.Null(getResult); //Här bör jag som sagt få tillbaka null
+        }
     }
 }

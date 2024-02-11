@@ -95,6 +95,29 @@ namespace Business.Services
             return new List<CategoryDto>(); //Om listan är tom, eller om något gick snett, så får man tillbaka en tom lista.
         }
 
+        public async Task<bool> UpdateCategoryAsync(string name, CategoryDto category)
+        {
+            try
+            {
+                var getEntity = await _repository.GetOneAsync(x => x.Name == name);
 
+                var categoryEntity = new Category() //Dto omvandlas till en entitet
+                {
+                    Id = getEntity.Id,
+                    Name = category.Name,
+                    ArticleNumbers = getEntity.ArticleNumbers
+                };
+
+                var updateResult = await _repository.UpdateAsync((x => x.Name == name), categoryEntity); //Entiteten med det angivna namnet (alltså det gamla) ersätts med med nya entiteten
+
+                return updateResult; //Om entiteten hittades så returneras true, annars false
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
+            return false; //Om något gick snett så returneras false
+        }
     }
 }
