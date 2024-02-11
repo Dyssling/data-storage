@@ -25,5 +25,25 @@ namespace Business.Tests.Services.Tests
 
             Assert.True(result); //Assert delen, där jag kollar om man får tillbaka true, vilket man bör få om allt gick som tänkt
         }
+
+        [Fact]
+        public async Task GetOneReviewAsync_ShouldGetOneReview_And_ReturnReviewDto()
+        {
+            var service = new ReviewService(_context); //Arrange delen
+            ReviewDto review = new ReviewDto()
+            {
+                CustomerId = 1,
+                Rating = 5,
+                Title ="TestTitle",
+                Content = "TestContent"
+            };
+            await service.CreateReviewAsync(review); //Lägger till den skapade entiteten i databasen
+
+            var result = await service.GetOneReviewAsync(1); //Act delen, där jag hämtar en entitet efter CustomerId
+            var nullResult = await service.GetOneReviewAsync(2); //Här testar jag även ett CustomerId som inte bör hittas
+
+            Assert.Equal(1, result.CustomerId); //Här kollar jag så att värdena stämmer, och på så vis vet jag att reviewn har hämtats
+            Assert.Null(nullResult); //Jag kollar även att det blir null på nullresult
+        }
     }
 }

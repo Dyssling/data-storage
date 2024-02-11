@@ -39,5 +39,31 @@ namespace Business.Services
             }
             return false; //Om metoden inte lyckas, eller om en kategori redan finns så returneras ett false värde
         }
+
+        public async Task<ReviewDto> GetOneReviewAsync(int customerId) //Metoden kommer returnera den första recensionen av en kund, men en kund kan ju skriva flera stycken dock
+        {
+            try
+            {
+                var entity = await _repository.GetOneAsync(x => x.CustomerId == customerId); //Jag söker efter entiteten med det angivna IDt
+
+                if (entity != null)
+                {
+                    ReviewDto review = new ReviewDto()
+                    {
+                        CustomerId = entity.CustomerId,
+                        Rating = entity.Rating,
+                        Title = entity.Title,
+                        Content = entity.Content
+                    };
+
+                    return review;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            return null!; //Om ingen entitet hittas, eller om något gick snett så returneras ett null värde
+        }
     }
 }
