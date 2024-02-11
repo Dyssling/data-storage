@@ -36,6 +36,10 @@ namespace Presentation.ConsoleUI
                     DeleteCurrencyUI deleteCurrencyUI = new DeleteCurrencyUI(_customersDataContext!);
                     await deleteCurrencyUI.Show();
                     break;
+                case "3":
+                    DeleteCustomerUI deleteCustomerUI = new DeleteCustomerUI(_customersDataContext!);
+                    await deleteCustomerUI.Show();
+                    break;
             }
         }
     }

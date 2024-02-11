@@ -37,6 +37,10 @@ namespace Presentation.ConsoleUI
                     UpdateCurrencyUI updateCurrencyUI = new UpdateCurrencyUI(_customersDataContext!);
                     await updateCurrencyUI.Show();
                     break;
+                case "3":
+                    UpdateCustomerUI updateCustomerUI = new UpdateCustomerUI(_customersDataContext!);
+                    await updateCustomerUI.Show();
+                    break;
             }
         }
     }

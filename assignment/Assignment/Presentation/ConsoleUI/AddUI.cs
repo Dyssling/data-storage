@@ -38,6 +38,10 @@ namespace Presentation.ConsoleUI
                     AddCurrencyUI addCurrencyUI = new AddCurrencyUI(_customersDataContext!);
                     await addCurrencyUI.Show();
                     break;
+                case "3":
+                    AddCustomerUI addCustomerUI = new AddCustomerUI(_customersDataContext!);
+                    await addCustomerUI.Show();
+                    break;
             }
         }
     }

@@ -36,6 +36,10 @@ namespace Presentation.ConsoleUI
                     GetAllCurrenciesUI getAllCurrenciesUI = new GetAllCurrenciesUI(_customersDataContext!);
                     await getAllCurrenciesUI.Show();
                     break;
+                case "3":
+                    GetAllCustomersUI getAllCustomersUI = new GetAllCustomersUI(_customersDataContext!);
+                    await getAllCustomersUI.Show();
+                    break;
             }
         }
     }
