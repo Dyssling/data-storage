@@ -41,5 +41,62 @@ namespace Business.Tests.Services.Tests
             Assert.Equal("Test", result.FirstName); //Här kollar jag så att namnet stämmer, och på så vis vet jag att entiteten har hämtats
             Assert.Null(nullResult); //Jag kollar även att det blir null på nullresult
         }
+
+        [Fact]
+        public async Task GetAllCustomersAsync_ShouldGetAllCustomers_And_ReturnIEnumerable()
+        {
+            var service = new CustomerService(_context); //Arrange delen
+            CustomerDto customer = new CustomerDto()
+            {
+                FirstName = "Test",
+                LastName = "Testsson"
+            };
+            await service.CreateCustomerAsync(customer);
+
+            var result = await service.GetAllCustomersAsync(); //Act delen
+
+            Assert.Single(result); //Jag kollar om listan innehåller ett element
+            Assert.Equal("Test", result.First().FirstName); //Och även om namnet stämmer överens
+        }
+
+        [Fact]
+        public async Task UpdateCustomerAsync_ShouldUpdateCustomer_And_ReturnTrue()
+        {
+            var service = new CustomerService(_context); //Arrange delen
+            CustomerDto customer = new CustomerDto()
+            {
+                FirstName = "Test",
+                LastName = "Testsson"
+            };
+            await service.CreateCustomerAsync(customer);
+            customer.FirstName = "NewTest"; //Här ändrar jag namnet
+
+            var result = await service.UpdateCustomerAsync(1, customer); //Act delen, där jag uppdaterar den gamla entiteten med den nya infon
+            var getResult = await service.GetOneCustomerAsync(1); //Jag hämtar även entiteten
+
+            Assert.True(result); //Assert delen, där jag kollar om man får tillbaka true, vilket man bör få om allt gick som tänkt
+            Assert.Equal("NewTest", getResult.FirstName); //Här bör jag få det nya värdet
+        }
+
+        [Fact]
+        public async Task DeleteCustomerAsync_ShouldDeleteCustomer_And_ReturnTrue()
+        {
+            var service = new CustomerService(_context); //Arrange delen
+
+            CustomerDto customer = new CustomerDto()
+            {
+                FirstName = "Test",
+                LastName = "Testsson"
+            };
+            await service.CreateCustomerAsync(customer);
+
+            var result = await service.DeleteCustomerAsync(1); //Act delen, där jag tar bort entiteten med det angivna Id't
+            var falseResult = await service.DeleteCustomerAsync(1); //Den bör returnera false, eftersom detta Id inte finns längre
+            var allCategories = await service.GetAllCustomersAsync(); //Jag vill även se hur vilka entiteter som nu finns
+
+            Assert.True(result); //Assert delen, där jag kollar om man får tillbaka ett true värde
+            Assert.False(falseResult); //Och ett false värde på den som inte kunde hittas
+            Assert.Empty(allCategories); //Listan med entiteter bör nu vara tom
+        }
     }
 }
