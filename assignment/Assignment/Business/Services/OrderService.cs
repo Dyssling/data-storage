@@ -107,5 +107,35 @@ namespace Business.Services
 
             return new List<OrderDto>(); //Om listan är tom, eller om något gick snett, så får man tillbaka en tom lista.
         }
+
+        public async Task<bool> UpdateOrderAsync(int id, OrderDto order)
+        {
+            try
+            {
+                var getEntity = await _repository.GetOneAsync(x => x.Id == id);
+
+                if (getEntity != null)
+                {
+                    var orderEntity = new OrderEntity() //Dto omvandlas till en entitet
+                    {
+                        Id = getEntity.Id,
+                        CustomerId = order.CustomerId,
+                        ProductList = order.ProductList,
+                        Cost = order.Cost,
+                        CurrencyISOCode = order.CurrencyISOCode
+                    };
+
+                    var updateResult = await _repository.UpdateAsync((x => x.Id == id), orderEntity); //Entiteten med det angivna Id't ersätts med den nya entiteten
+
+                    return updateResult; //Om entiteten hittades så returneras true, annars false
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
+            return false; //Om något gick snett så returneras false
+        }
     }
 }

@@ -122,5 +122,45 @@ namespace Business.Tests.Services.Tests
             Assert.Single(result); //Jag kollar om listan innehåller ett element
             Assert.Equal(1, result.First().CustomerId); //Och även om CustomerId stämmer överens
         }
+
+        [Fact]
+        public async Task UpdateOrderAsync_ShouldUpdateOrder_And_ReturnTrue()
+        {
+            var service = new OrderService(_context); //Arrange delen
+            var customerService = new CustomerService(_context);
+            var currencyService = new CurrencyService(_context);
+
+            CustomerDto customer = new CustomerDto() //Skapar en kund, eftersom en order är beroende av ett CustomerId
+            {
+                FirstName = "Test",
+                LastName = "Testsson"
+            };
+
+            await customerService.CreateCustomerAsync(customer); //Lägger till den i databasen
+
+            CurrencyDto currency = new CurrencyDto() //Samma sak med currency
+            {
+                ISOCode = "TestISO",
+                Name = "TestName"
+            };
+
+            await currencyService.CreateCurrencyAsync(currency);
+
+            OrderDto order = new OrderDto()
+            {
+                CustomerId = 1,
+                ProductList = "TestProducts",
+                Cost = 10,
+                CurrencyISOCode = "TestISO"
+            };
+            await service.CreateOrderAsync(order);
+            order.Cost = 20; //Här ändrar jag cost
+
+            var result = await service.UpdateOrderAsync(1, order); //Act delen, där jag uppdaterar den gamla entiteten med den nya infon
+            var getResult = await service.GetOneOrderAsync(1); //Jag hämtar även entiteten
+
+            Assert.True(result); //Assert delen, där jag kollar om man får tillbaka true, vilket man bör få om allt gick som tänkt
+            Assert.Equal(20, getResult.Cost); //Här bör jag få det nya värdet
+        }
     }
 }
