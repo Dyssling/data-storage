@@ -162,5 +162,47 @@ namespace Business.Tests.Services.Tests
             Assert.True(result); //Assert delen, där jag kollar om man får tillbaka true, vilket man bör få om allt gick som tänkt
             Assert.Equal(20, getResult.Cost); //Här bör jag få det nya värdet
         }
+
+        [Fact]
+        public async Task DeleteOrderAsync_ShouldDeleteOrder_And_ReturnTrue()
+        {
+            var service = new OrderService(_context); //Arrange delen
+            var customerService = new CustomerService(_context);
+            var currencyService = new CurrencyService(_context);
+
+            CustomerDto customer = new CustomerDto() //Skapar en kund, eftersom en order är beroende av ett CustomerId
+            {
+                FirstName = "Test",
+                LastName = "Testsson"
+            };
+
+            await customerService.CreateCustomerAsync(customer); //Lägger till den i databasen
+
+            CurrencyDto currency = new CurrencyDto() //Samma sak med currency
+            {
+                ISOCode = "TestISO",
+                Name = "TestName"
+            };
+
+            await currencyService.CreateCurrencyAsync(currency);
+
+
+            OrderDto order = new OrderDto()
+            {
+                CustomerId = 1,
+                ProductList = "TestProducts",
+                Cost = 10,
+                CurrencyISOCode = "TestISO"
+            };
+            await service.CreateOrderAsync(order);
+
+            var result = await service.DeleteOrderAsync(1); //Act delen, där jag tar bort entiteten med det angivna Id't
+            var falseResult = await service.DeleteOrderAsync(1); //Den bör returnera false, eftersom detta Id inte finns längre
+            var allCategories = await service.GetAllOrdersAsync(); //Jag vill även se hur vilka entiteter som nu finns
+
+            Assert.True(result); //Assert delen, där jag kollar om man får tillbaka ett true värde
+            Assert.False(falseResult); //Och ett false värde på den som inte kunde hittas
+            Assert.Empty(allCategories); //Listan med entiteter bör nu vara tom
+        }
     }
 }
