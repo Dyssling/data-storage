@@ -40,6 +40,10 @@ namespace Presentation.ConsoleUI
                     DeleteCustomerUI deleteCustomerUI = new DeleteCustomerUI(_customersDataContext!);
                     await deleteCustomerUI.Show();
                     break;
+                case "4":
+                    DeleteImageUI deleteImageUI = new DeleteImageUI(_productsDataContext!);
+                    await deleteImageUI.Show();
+                    break;
             }
         }
     }

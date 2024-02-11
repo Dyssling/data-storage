@@ -40,6 +40,10 @@ namespace Presentation.ConsoleUI
                     GetAllCustomersUI getAllCustomersUI = new GetAllCustomersUI(_customersDataContext!);
                     await getAllCustomersUI.Show();
                     break;
+                case "4":
+                    GetAllImagesUI getAllImagesUI = new GetAllImagesUI(_productsDataContext!);
+                    await getAllImagesUI.Show();
+                    break;
             }
         }
     }

@@ -42,6 +42,10 @@ namespace Presentation.ConsoleUI
                     AddCustomerUI addCustomerUI = new AddCustomerUI(_customersDataContext!);
                     await addCustomerUI.Show();
                     break;
+                case "4":
+                    AddImageUI addImageUI = new AddImageUI(_productsDataContext!);
+                    await addImageUI.Show();
+                    break;
             }
         }
     }
